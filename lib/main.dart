@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:location_task/permission.dart';
 
-void main() {
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'permission.dart';
+import 'bg_services.dart';
+import 'local_db.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
+  await initService();
   runApp(const MyApp());
 }
 
@@ -17,7 +24,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Scaffold(body: Center(child: Text('Hello World'))),
+      home: Scaffold(
+        body: FutureBuilder<int?>(
+          future: LocalDB.count(),
+          builder: (context, snapshot) {
+            int count = snapshot.data ?? 0;
+            return Center(child: Text('Count: $count'));
+          },
+        ),
+      ),
     );
   }
 }
