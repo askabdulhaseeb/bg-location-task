@@ -7,6 +7,7 @@ import 'bg_services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initService();
   runApp(const MyApp());
 }
 
@@ -24,9 +25,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  init() async {
-    await initService();
-  }
+  init() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +38,7 @@ class _MyAppState extends State<MyApp> {
       ),
       home: const Scaffold(
         body: Center(
-          child:
-              Text('Demo for running background service in Flutter app 🚀'),
+          child: Text('Demo for running background service in Flutter app 🚀'),
         ),
       ),
     );

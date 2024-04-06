@@ -13,6 +13,7 @@ const notificationChannelId = 'my_foreground';
 const notificationId = 888;
 
 Future<void> initService() async {
+  await Geolocator.requestPermission();
   final service = FlutterBackgroundService();
   await service.configure(
     iosConfiguration: IosConfiguration(
@@ -48,23 +49,23 @@ Future<dynamic> startService(ServiceInstance ser) async {
     if (ser is AndroidServiceInstance) {
       if (await ser.isForegroundService()) {
         log('message from foreground service: isForegroundService');
+        final Position? position = await HttpCall().updateLocation();
+        flutterLocalNotificationsPlugin.show(
+          notificationId,
+          'COOL SERVICE',
+          'Awesome ${DateTime.now()}',
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              notificationChannelId,
+              'MY FOREGROUND SERVICE',
+              channelDescription:
+                  'Position: ${position?.latitude}, ${position?.longitude}',
+              icon: 'ic_bg_service_small',
+              ongoing: true,
+            ),
+          ),
+        );
       }
     }
-    final Position? position = await HttpCall().updateLocation();
-    flutterLocalNotificationsPlugin.show(
-      notificationId,
-      'COOL SERVICE',
-      'Awesome ${DateTime.now()}',
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          notificationChannelId,
-          'MY FOREGROUND SERVICE',
-          channelDescription:
-              'Position: ${position?.latitude}, ${position?.longitude}',
-          icon: 'ic_bg_service_small',
-          ongoing: true,
-        ),
-      ),
-    );
   });
 }
