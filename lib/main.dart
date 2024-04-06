@@ -1,19 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'permission.dart';
 import 'bg_services.dart';
-import 'local_db.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: '.env');
-  await initService();
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  init() async {
+    await initService();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +37,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Scaffold(
-        body: FutureBuilder<int?>(
-          future: LocalDB.count(),
-          builder: (context, snapshot) {
-            int count = snapshot.data ?? 0;
-            return Center(child: Text('Count: $count'));
-          },
+      home: const Scaffold(
+        body: Center(
+          child:
+              Text('Demo for running background service in Flutter app 🚀'),
         ),
       ),
     );
